@@ -44,6 +44,7 @@ body {
 			<th>Year</th>
 			<th></th>
 		</tr>
+		<!-- Iteroidaan kirjojen läpi -->
 		<tr th:each="book : ${books}">
 			<td th:text="${book.id}">1</td>
 			<td th:text="${book.title}">1</td>
@@ -54,7 +55,7 @@ body {
 		</tr>
 	</table>
 
-
+	<!-- lähetetään lomake /add sivulle post-metodilla -->
 	<form action="/add" method="post">
 		<table>
 			<tr>
