@@ -125,7 +125,9 @@ span[contenteditable=true] {
 			
 			if(value == "false") {
 				$("#" + asia + id).attr('contenteditable', 'true');
+				$("span").not("#" + asia + id).attr('contenteditable', 'false');
 				$(this).html('<i class="far fa-save"></i>');
+				$('.muokkaa').not(this).html('<i class="far fa-edit"></i>');
 			} else {
 				var arvo = $("#" + asia + id).text();
 				window.location.href = '/edit/'+id+'/'+asia+'/'+arvo;
