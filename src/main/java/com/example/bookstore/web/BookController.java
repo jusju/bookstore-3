@@ -16,34 +16,34 @@ public class BookController {
 	@Autowired
 	private BookRepository repository;
 
-	//perussivu /booklist
+	// perussivu /booklist
 	@RequestMapping("/booklist")
 	public String bookList(Model model) {
-		//lisätään kirjat modeliin
+		// lisätään kirjat modeliin
 		model.addAttribute("books", repository.findAll());
-		//booklist.html
+		// booklist.html
 		return "booklist";
 	}
 
-	// lisäyslomake /add 
+	// lisäyslomake /add
 	@PostMapping("/add")
 	public String postBook(String title, String author, String isbn, String year) {
-		//luodaan kirjaolio parametreinä saaduista string-muuttujista
+		// luodaan kirjaolio parametreinä saaduista string-muuttujista
 		Book newbook = new Book(isbn, title, author, year);
-		//tallennus
+		// tallennus
 		repository.save(newbook);
-		//uudelleenohjaus perussivulle
+		// uudelleenohjaus perussivulle
 		return "redirect:/booklist";
 	}
 
 	// poistolinkki /delete/id
 	@GetMapping("/delete/{no}")
 	public String deleteBook(@PathVariable String no) {
-		//string longiksi
+		// string longiksi
 		long id = Long.parseLong(no);
-		//poisto
-	    repository.deleteById(id);
-	    //uudelleenohjaus perussivulle
-	    return "redirect:/booklist";
+		// poisto
+		repository.deleteById(id);
+		// uudelleenohjaus perussivulle
+		return "redirect:/booklist";
 	}
 }

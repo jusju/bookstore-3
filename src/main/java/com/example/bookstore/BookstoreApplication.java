@@ -20,7 +20,7 @@ public class BookstoreApplication {
 		return (args) -> {
 			Book h = new Book("12345", "Harry Potter ja Viisasten kivi", "J.K. Rowling", "1900");
 			Book m = new Book("23456", "Muukalainen", "Diana Gabaldon", "2000");
-			
+
 			repository.save(h);
 			repository.save(m);
 		};
