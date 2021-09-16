@@ -1,5 +1,7 @@
 package com.example.bookstore.web;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +19,7 @@ public class BookController {
 	private BookRepository repository;
 
 	// perussivu /booklist
-	@RequestMapping("/booklist")
+	@RequestMapping(value={"/index", "/booklist"})
 	public String bookList(Model model) {
 		// lisätään kirjat modeliin
 		model.addAttribute("books", repository.findAll());
@@ -43,6 +45,36 @@ public class BookController {
 		long id = Long.parseLong(no);
 		// poisto
 		repository.deleteById(id);
+		// uudelleenohjaus perussivulle
+		return "redirect:/booklist";
+	}
+	
+	@GetMapping("/edit/{id}/{thing}/{val}")
+	public String editBook(@PathVariable String val, @PathVariable String thing, @PathVariable String id) {
+		System.out.println("Jes ollaan täällä!!!");
+		// id string longiksi
+		long iidee = Long.parseLong(id);
+		
+		Optional<Book> paivitettava = repository.findById(iidee);
+		Book paivitettavaKirja = paivitettava.get();
+		
+		switch(thing) {
+			case "title":
+				paivitettavaKirja.setTitle(val);
+				break;
+			case "author":
+				paivitettavaKirja.setAuthor(val);
+				break;
+			case "year":
+				paivitettavaKirja.setYear(val);
+				break;
+			case "isbn":
+				paivitettavaKirja.setIsbn(val);
+				break;
+		}
+		
+		repository.save(paivitettavaKirja);
+		
 		// uudelleenohjaus perussivulle
 		return "redirect:/booklist";
 	}

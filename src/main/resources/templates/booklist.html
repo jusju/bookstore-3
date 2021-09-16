@@ -7,6 +7,10 @@
 	rel="stylesheet"
 	integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
 	crossorigin="anonymous">
+<script src="https://kit.fontawesome.com/7e7cff31ed.js"
+	crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+
 <style>
 td {
 	padding: .5em;
@@ -26,8 +30,31 @@ body {
 	padding: 0 .3em;
 	text-decoration: none;
 	min-width: 2em;
-	background-color: red;
 	text-align: center;
+}
+
+.muokkaa {
+	display: inline-block;
+	background-color: green;
+	color: #fff;
+	border-radius: 1em;
+	padding: 0 .3em;
+	text-decoration: none;
+	min-width: 2em;
+	text-align: center;
+}
+
+.muokkaa:hover, .poista:hover {
+	color: #fff;
+	cursor: pointer;
+}
+
+span[contenteditable=true] {
+	font-family: monospace;
+	background: #fff3a4;
+	border-radius: 1em;
+	padding: 0 1em;
+	border: 1px dashed #ffbb19;
 }
 </style>
 <head>
@@ -46,11 +73,21 @@ body {
 		</tr>
 		<!-- Iteroidaan kirjojen läpi -->
 		<tr th:each="book : ${books}">
-			<td th:text="${book.id}">1</td>
-			<td th:text="${book.title}">1</td>
-			<td th:text="${book.isbn}">1</td>
-			<td th:text="${book.author}">1</td>
-			<td th:text="${book.year}">1</td>
+			<td><span th:text="${book.id}">1</span></td>
+			<td><span th:text="${book.title}"
+				th:id="@{'title' + ${book.id}}" contenteditable="false">1</span> <a
+				class="muokkaa" rel="title" th:name="${book.id}"><i
+					class="far fa-edit"></i></a></td>
+			<td><span th:text="${book.isbn}" th:id="@{'isbn' + ${book.id}}"
+				contenteditable="false">1</span> <a class="muokkaa" rel="isbn"
+				th:name="${book.id}"><i class="far fa-edit"></i></a></td>
+			<td><span th:text="${book.author}"
+				th:id="@{'author' + ${book.id}}" contenteditable="false">1</span> <a
+				class="muokkaa" rel="author" th:name="${book.id}"><i
+					class="far fa-edit"></i></a></td>
+			<td><span th:text="${book.year}" th:id="@{'year' + ${book.id}}"
+				contenteditable="false">1</span> <a class="muokkaa" rel="year"
+				th:name="${book.id}"><i class="far fa-edit"></i></a></td>
 			<td><a class="poista" th:href="@{'/delete/' + ${book.id}}">&#215;</a></td>
 		</tr>
 	</table>
@@ -80,5 +117,20 @@ body {
 		</p>
 	</form>
 
+	<script>
+		$('.muokkaa').click(function() {
+			var asia = $(this).attr('rel');
+			var id = $(this).attr('name');
+			var value = $('#' + asia + id).attr('contenteditable');
+			
+			if(value == "false") {
+				$("#" + asia + id).attr('contenteditable', 'true');
+				$(this).html('<i class="far fa-save"></i>');
+			} else {
+				var arvo = $("#" + asia + id).text();
+				window.location.href = '/edit/'+id+'/'+asia+'/'+arvo;
+			}
+		});
+	</script>
 </body>
 </html>
