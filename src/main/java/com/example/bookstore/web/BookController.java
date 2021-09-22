@@ -12,26 +12,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.bookstore.domain.Book;
 import com.example.bookstore.domain.BookRepository;
+import com.example.bookstore.domain.Category;
+import com.example.bookstore.domain.CategoryRepository;
 
 @Controller
 public class BookController {
 	@Autowired
 	private BookRepository repository;
+	@Autowired
+	private CategoryRepository catrep;
 
 	// perussivu /booklist
 	@RequestMapping(value={"/index", "/booklist"})
 	public String bookList(Model model) {
 		// lisätään kirjat modeliin
 		model.addAttribute("books", repository.findAll());
+		model.addAttribute("categories", catrep.findAll());
 		// booklist.html
 		return "booklist";
 	}
 
 	// lisäyslomake /add
 	@PostMapping("/add")
-	public String postBook(String title, String author, String isbn, String year) {
+	public String postBook(String title, String author, String isbn, String year, String cat) {
 		// luodaan kirjaolio parametreinä saaduista string-muuttujista
-		Book newbook = new Book(isbn, title, author, year);
+		Optional<Category> katsu = catrep.findById(Long.parseLong(cat));
+		Category uusiKatsu = katsu.get();
+		Book newbook = new Book(isbn, title, author, year, uusiKatsu);
 		// tallennus
 		repository.save(newbook);
 		// uudelleenohjaus perussivulle
@@ -51,7 +58,6 @@ public class BookController {
 	
 	@GetMapping("/edit/{id}/{thing}/{val}")
 	public String editBook(@PathVariable String val, @PathVariable String thing, @PathVariable String id) {
-		System.out.println("Jes ollaan täällä!!!");
 		// id string longiksi
 		long iidee = Long.parseLong(id);
 		
@@ -59,6 +65,11 @@ public class BookController {
 		Book paivitettavaKirja = paivitettava.get();
 		
 		switch(thing) {
+			case "category":
+				Optional<Category> katsu = catrep.findById(Long.parseLong(val));
+				Category uusiKatsu = katsu.get();
+				paivitettavaKirja.setCategory(uusiKatsu);
+				break;
 			case "title":
 				paivitettavaKirja.setTitle(val);
 				break;

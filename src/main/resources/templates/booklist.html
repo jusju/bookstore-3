@@ -68,6 +68,7 @@ span[contenteditable=true] {
 			<th>Title</th>
 			<th>ISBN</th>
 			<th>Author</th>
+			<th>Category</th>
 			<th>Year</th>
 			<th></th>
 		</tr>
@@ -85,6 +86,18 @@ span[contenteditable=true] {
 				th:id="@{'author' + ${book.id}}" contenteditable="false">1</span> <a
 				class="muokkaa" rel="author" th:name="${book.id}"><i
 					class="far fa-edit"></i></a></td>
+
+			<td><select th:id="@{'catlist' + ${book.id}}"
+				class="form-control" style="display: none;">
+					<option value="" disabled="disabled" selected="selected">Choose
+						category...</option>
+					<option th:each="category: ${categories}"
+						th:value="${category.categoryid}" th:text="${category.name}"></option>
+			</select><span th:text="${book.category.name}"
+				th:id="@{'category' + ${book.id}}">1</span> <a
+				class="muokkaa spessu" rel="category" th:name="${book.id}"><i
+					class="far fa-edit"></i></a></td>
+
 			<td><span th:text="${book.year}" th:id="@{'year' + ${book.id}}"
 				contenteditable="false">1</span> <a class="muokkaa" rel="year"
 				th:name="${book.id}"><i class="far fa-edit"></i></a></td>
@@ -93,23 +106,37 @@ span[contenteditable=true] {
 	</table>
 
 	<!-- lähetetään lomake /add sivulle post-metodilla -->
+	<h2>Add book</h2>
 	<form action="/add" method="post">
 		<table>
 			<tr>
 				<td>Title:</td>
-				<td><input type="text" name="title" required /></td>
+				<td><input class="form-control" type="text" name="title"
+					required /></td>
 			</tr>
 			<tr>
 				<td>ISBN:</td>
-				<td><input type="text" name="isbn" required /></td>
+				<td><input class="form-control" type="text" name="isbn"
+					required /></td>
 			</tr>
 			<tr>
 				<td>Author:</td>
-				<td><input type="text" name="author" required /></td>
+				<td><input class="form-control" type="text" name="author"
+					required /></td>
+			</tr>
+			<tr>
+				<td>Category:</td>
+				<td><select id="catlist" class="form-control" name="cat">
+						<option value="" disabled="disabled" selected="selected">Choose
+							category...</option>
+						<option th:each="category: ${categories}"
+							th:value="${category.categoryid}" th:text="${category.name}"></option>
+				</select></td>
 			</tr>
 			<tr>
 				<td>Year:</td>
-				<td><input type="text" name="year" required /></td>
+				<td><input class="form-control" type="text" name="year"
+					required /></td>
 			</tr>
 		</table>
 		<p>
@@ -118,21 +145,45 @@ span[contenteditable=true] {
 	</form>
 
 	<script>
-		$('.muokkaa').click(function() {
-			var asia = $(this).attr('rel');
-			var id = $(this).attr('name');
-			var value = $('#' + asia + id).attr('contenteditable');
-			
-			if(value == "false") {
-				$("#" + asia + id).attr('contenteditable', 'true');
-				$("span").not("#" + asia + id).attr('contenteditable', 'false');
-				$(this).html('<i class="far fa-save"></i>');
-				$('.muokkaa').not(this).html('<i class="far fa-edit"></i>');
-			} else {
-				var arvo = $("#" + asia + id).text();
-				window.location.href = '/edit/'+id+'/'+asia+'/'+arvo;
-			}
-		});
+		$('.muokkaa').not('.spessu').click(
+				function() {
+					var asia = $(this).attr('rel');
+					var id = $(this).attr('name');
+					var value = $('#' + asia + id).attr('contenteditable');
+
+					if (value == "false") {
+						$("#" + asia + id).attr('contenteditable', 'true');
+						$("span").not("#" + asia + id).attr('contenteditable',
+								'false');
+						$(this).html('<i class="far fa-save"></i>');
+						$('.muokkaa').not(this).html(
+								'<i class="far fa-edit"></i>');
+					} else {
+						var arvo = $("#" + asia + id).text();
+						window.location.href = '/edit/' + id + '/' + asia + '/'
+								+ arvo;
+					}
+				});
+		$('.spessu').click(
+				function() {
+
+					var asia = $(this).attr('rel');
+					var id = $(this).attr('name');
+					var value = $(this).html();
+
+					if (value.indexOf("edit") > 0) {
+						$("#catlist" + id).css("display", "inline-block");
+						$("#category" + id).hide();
+						$(this).html('<i class="far fa-save"></i>');
+					} else {
+						var arvo = $("#catlist" + id).val();
+						if (arvo != "" && arvo != null) {
+							window.location.href = '/edit/' + id + '/' + asia
+									+ '/' + arvo;
+						}
+					}
+
+				});
 	</script>
 </body>
 </html>
