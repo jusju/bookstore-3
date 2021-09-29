@@ -1,5 +1,6 @@
 package com.example.bookstore.web;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.bookstore.domain.Book;
 import com.example.bookstore.domain.BookRepository;
@@ -89,4 +91,16 @@ public class BookController {
 		// uudelleenohjaus perussivulle
 		return "redirect:/booklist";
 	}
+	
+	// REST hae kirjat
+	@GetMapping("/books")
+    public @ResponseBody List<Book> booklistREST() {	
+        return (List<Book>) repository.findAll();
+    }    
+	
+	// REST hae kirja id:llä
+	@GetMapping("/books/{id}")
+    public @ResponseBody Optional<Book> findBookREST(@PathVariable("id") Long iidee) {	
+    	return repository.findById(iidee);
+    }   
 }
