@@ -20,10 +20,10 @@ public class UserController {
 	@Autowired
     private UserRepository repository; 
 	
-    @RequestMapping(value = "signup")
+    @RequestMapping(value = "rekisteroidy")
     public String addStudent(Model model){
     	model.addAttribute("signupform", new Signup());
-        return "signup";
+        return "rekisteroidy";
     }	
     
     /**
@@ -51,18 +51,18 @@ public class UserController {
 		    	}
 		    	else {
 	    			bindingResult.rejectValue("username", "err.username", "Username already exists");    	
-	    			return "signup";		    		
+	    			return "rekisteroidy";		    		
 		    	}
     		}
     		else {
     			bindingResult.rejectValue("passwordCheck", "err.passCheck", "Passwords does not match");    	
-    			return "signup";
+    			return "rekisteroidy";
     		}
     	}
     	else {
-    		return "signup";
+    		return "rekisteroidy";
     	}
-    	return "redirect:/login";    	
+    	return "redirect:/kirjaudu";    	
     }    
     
 }
