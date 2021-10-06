@@ -22,6 +22,8 @@ body {
 	background-color: snow;
 }
 
+h1 {margin:.5em 0 0;}
+
 .poista {
 	display: inline-block;
 	background-color: red;
@@ -56,12 +58,21 @@ span[contenteditable=true] {
 	padding: 0 1em;
 	border: 1px dashed #ffbb19;
 }
+
+#logout {
+	float:right;
+	margin:2em;
+}
 </style>
 <head>
 <title>Server Programming</title>
 </head>
 <body>
+	<form id="logout" th:action="@{/logout}" method="post">
+		<input type="submit" value="Sign Out" class="btn btn-sm btn-danger"/>
+	</form>
 	<h1>Bookstore</h1>
+	
 	<table class="table table-striped">
 		<tr>
 			<th>ID</th>

@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add student</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+</head>
+<body>
+<div class="container">
+	<h1>Rekisteröidy</h1>
+     <div class="col-md-4">
+		<form th:object="${signupform}" th:action="@{/saveuser}" action="#" method="post">
+			<div>
+				<label> Käyttäjätunnus :<input type="text" th:field="*{username}" class="form-control"/></label>
+				<p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Virheellinen käyttäjätunnus</p>	
+			</div>
+			<div>
+				<label> Salasana :<input type="password" th:field="*{password}" class="form-control"/></label>
+				<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Virheellinen salasana</p>	
+			</div>
+			<div>
+				<label> Salasana (uudelleen): <input type="password" th:field="*{passwordCheck}" class="form-control"/></label>
+				<p th:if="${#fields.hasErrors('passwordCheck')}" th:errors="*{passwordCheck}">Virheellinen salasana</p>	
+			</div>
+			
+			<input type="submit" class="btn btn-primary" value="Signup"></input>		
+		</form>
+	</div>
+</div>
+</body>
+</html>
