@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+	xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
 <!-- CSS only -->
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
@@ -61,7 +62,10 @@ span[contenteditable=true] {
 <title>Server Programming</title>
 </head>
 <body>
-	<h1>Bookstore</h1>
+	<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]! Welcome to the Bookstore.</h1>
+	<form th:action="@{/logout}" method="post">
+ <input type="submit" value="Sign Out"/>
+</form>
 	<table class="table table-striped">
 		<tr>
 			<th>ID</th>
@@ -70,7 +74,7 @@ span[contenteditable=true] {
 			<th>Author</th>
 			<th>Category</th>
 			<th>Year</th>
-			<th></th>
+			<th sec:authorize="hasAuthority('ADMIN')"></th>
 		</tr>
 		<!-- Iteroidaan kirjojen läpi -->
 		<tr th:each="book : ${books}">
@@ -101,13 +105,13 @@ span[contenteditable=true] {
 			<td><span th:text="${book.year}" th:id="@{'year' + ${book.id}}"
 				contenteditable="false">1</span> <a class="muokkaa" rel="year"
 				th:name="${book.id}"><i class="far fa-edit"></i></a></td>
-			<td><a class="poista" th:href="@{'/delete/' + ${book.id}}">&#215;</a></td>
+			<td sec:authorize="hasAuthority('ADMIN')"><a class="poista" th:href="@{'/delete/' + ${book.id}}">&#215;</a></td>
 		</tr>
 	</table>
 
 	<!-- lähetetään lomake /add sivulle post-metodilla -->
 	<h2>Add book</h2>
-	<form action="/add" method="post">
+	<form th:action="@{/add}" method="post">
 		<table>
 			<tr>
 				<td>Title:</td>
@@ -142,6 +146,7 @@ span[contenteditable=true] {
 		<p>
 			<input type="submit" value="Add a book" class="btn btn-success" />
 		</p>
+		
 	</form>
 
 	<script>

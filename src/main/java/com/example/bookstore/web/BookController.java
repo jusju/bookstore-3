@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,11 @@ public class BookController {
 	private BookRepository repository;
 	@Autowired
 	private CategoryRepository catrep;
+	
+    @RequestMapping(value="/login")
+    public String login() {	
+        return "kirjaudu";
+    }
 
 	// perussivu /booklist
 	@RequestMapping(value={"/index", "/booklist"})
@@ -43,17 +49,6 @@ public class BookController {
 		Book newbook = new Book(isbn, title, author, year, uusiKatsu);
 		// tallennus
 		repository.save(newbook);
-		// uudelleenohjaus perussivulle
-		return "redirect:/booklist";
-	}
-
-	// poistolinkki /delete/id
-	@GetMapping("/delete/{no}")
-	public String deleteBook(@PathVariable String no) {
-		// string longiksi
-		long id = Long.parseLong(no);
-		// poisto
-		repository.deleteById(id);
 		// uudelleenohjaus perussivulle
 		return "redirect:/booklist";
 	}
@@ -103,4 +98,16 @@ public class BookController {
     public @ResponseBody Optional<Book> findBookREST(@PathVariable("id") Long iidee) {	
     	return repository.findById(iidee);
     }   
+	
+	// poistolinkki /delete/id
+	@GetMapping("/delete/{no}")
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public String deleteBook(@PathVariable String no) {
+		// string longiksi
+		long id = Long.parseLong(no);
+		// poisto
+		repository.deleteById(id);
+		// uudelleenohjaus perussivulle
+		return "redirect:/booklist";
+	}
 }
